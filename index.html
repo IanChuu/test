@@ -1,11 +1,579 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="UTF-8" />
-  <title>TodoApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            font-family: "Microsoft JhengHei", "Open Sans", sans-serif, Heiti TC;
+            color: #424242;
+            font-size: 14px;
+            line-height: 24px;
+            background-color: #fff;
+        }
+        
+        #objectContainer {
+            margin-top: 76px;
+        }
+        
+        .rheostat {
+            overflow: visible;
+        }
+        
+        .rheostat-background {
+            background-color: #fcfcfc;
+            border: 1px solid #d8d8d8;
+            position: relative;
+            height: 10px;
+        }
+        
+        .rheostat-progress {
+            background-color: #abc4e8;
+            position: absolute;
+            height: 10px;
+            top: 0px;
+        }
+        
+        .rheostat-handle:before,
+        .rheostat-handle:after {
+            content: '';
+            display: block;
+            position: absolute;
+            background-color: #dadfe8;
+        }
+        
+        .range-text {
+            padding: 10px 0 30px 0;
+        }
+        
+        .range-text span:nth-child(1) {
+            padding-left: 35px;
+        }
+        
+        .range-text span:nth-child(2) {
+            padding-right: 35px;
+        }
+        
+        button.rheostat-handle {
+            outline: none;
+            background-color: rgb(255, 255, 255);
+            border: 1px solid #d7d7d7;
+            border-radius: 50%;
+            cursor: ew-resize;
+            min-height: 30px;
+            min-width: 30px;
+            z-index: 3;
+            margin-left: -12px;
+            top: -10px;
+            transform: scale(.7);
+        }
+        
+        .range-container div:nth-child(2) .rheostat-progress {
+            background: #ffa1a1;
+        }
+        
+        .select-range {
+            margin: '10px auto';
+            width: '90%';
+        }
+        
+        .checkbox.col-xs-4,
+        .checkbox.col-xs-6 {
+            margin: 5px 0;
+            padding: 0;
+        }
+        
+        .vitural-line::after {
+            content: '';
+            height: 1px;
+            display: block;
+            width: 100%;
+            margin: 0 auto;
+            background: #d9cece;
+            position: absolute;
+            bottom: -5px;
+        }
+        
+        .tag-selelct::before {
+            content: '';
+            height: 1px;
+            display: block;
+            width: 100%;
+            margin: 0 auto;
+            background: #d9cece;
+            position: relative;
+            top: 0px;
+        }
+        
+        .tag-selelct {
+            min-height: 50px;
+            margin-bottom: 55px;
+        }
+        
+        .clearFix {
+            clear: both;
+        }
+        
+        .control-container {
+            padding-top: 15px;
+        }
+        
+        .city-tab {
+            padding: 10px 15px;
+            text-align: center;
+            font-weight: 900;
+        }
+        
+        .city-tab.active span {
+            background: #eee;
+            padding: 5px 8px;
+            border-radius: 5px;
+        }
+        
+        .area-container {
+            min-height: 175px;
+            padding: 0;
+        }
+        
+        .areatag-container {
+            color: #d7d7d7;
+            padding-top: 10px;
+        }
+        
+        .area-tag {
+            padding-right: 3px;
+            cursor: pointer;
+            color: #d7d7d7;
+        }
+        
+        .area-tag::after {
+            content: "、";
+            padding-left: 3px;
+        }
+        
+        .area-tag span {
+            display: inline-block;
+        }
+        
+        .area-tag:last-child::after {
+            display: none;
+        }
+        
+        .number-select {
+            padding: 0 5px;
+        }
+        
+        .room-container>.col-xs-12 {
+            padding: 5px 0;
+        }
+        
+        button.control-number {
+            background: #eee;
+            border: 1px solid #ffa1a1;
+            color: #ffa1a1;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            outline: none;
+        }
+        
+        button.control-number:active {
+            border: 1px solid #dc7c7c;
+            background: #dccece;
+            color: #efefef;
+        }
+        
+        button.control-number:focus {
+            border: 1px solid #ffa1a1;
+        }
+        
+        button.control-number:disabled {
+            background: #dddddd;
+        }
+        
+        button.control-number:disabled:active {
+            background: #dddddd;
+            color: #ffa1a1;
+        }
+        
+        .feature-container label,
+        .specify-container label {
+            padding-right: 15px;
+            float: right;
+        }
+        
+        .feature-container .col-xs-6,
+        .specify-container .col-xs-6 {
+            padding: 5px 0;
+        }
+        
+        .submit-container {
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            z-index: 100;
+            background: white;
+            padding: 0;
+            margin: 0px -15px;
+        }
+        
+        .submit-container .search-action {
+            background: #c75453;
+            color: #fff;
+            margin: 10px 0;
+        }
+        
+        .submit-container::before {
+            content: '';
+            height: 1px;
+            display: block;
+            width: 100%;
+            margin: 0 auto;
+            background: #d9cece;
+            position: relative;
+            top: 0px;
+        }
+        
+        .control-bar {
+            text-align: center;
+        }
+        
+        .control-bar .container {
+            padding: 15px 15px;
+            position: relative;
+            border-bottom: 1px solid #eae2e2;
+        }
+        
+        .control-bar .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .reset-button {
+            float: right;
+            color: #ffa1a1;
+        }
+        
+        .resize-button {
+            float: left;
+        }
+        
+        .control-bar {
+            display: none;
+        }
+        
+        #controlBar {
+            position: fixed;
+            top: 0;
+            z-index: 10000;
+            background: #fff;
+            overflow-y: scroll;
+            height: 100%;
+            width: 100%;
+        }
+        
+        #root {
+            width: 100%;
+        }
+        
+        .control-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            z-index: 10000;
+        }
+        
+        .control-container {
+            padding-top: 15px;
+            margin-top: 50px;
+        }
+        
+        .control-container h3 {
+            font-size: 17px;
+            color: #dc7c7c;
+            font-weight: 700;
+        }
+        
+        .area-text::after,
+        .type-text::after {
+            content: '(可複選)';
+            display: inline-block;
+            color: #d7d7d7;
+            font-size: 14px;
+        }
+        
+        .control-bar .container {
+            padding: 15px 15px;
+            position: relative;
+            border-bottom: 1px solid #eae2e2;
+        }
+        /* checked icon*/
+        
+        input[type=checkbox].beauty-checked {
+            display: none;
+        }
+        
+        input[type=checkbox].beauty-checked+.label-text::before {
+            font-family: FontAwesome;
+            display: inline-block;
+        }
+        
+        input[type=checkbox].beauty-checked+.label-text::before {
+            width: 20px;
+            content: "\f096";
+            color: #d7d7d7;
+        }
+        
+        input[type=checkbox].beauty-checked:checked+.label-text:before {
+            width: 20px;
+            content: "\f00c";
+            color: #555;
+        }
+        
+        #moreId,
+        .loading-icon {
+            display: none;
+        }
+        
+        #nobojId {
+            width: 100%;
+            height: 100px;
+            text-align: center;
+            line-height: 100px;
+            display: none;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>
+        var selectCity = []
+        var selectArea = [];
+        var selectType = [];
+        var selectPrice = [];
+        var selectSquare = [];
+        var selectBedroom = [];
+        var selectBathroom = [];
+        var selectkeyword = '';
+        var selectSpecify = [];
+        var selectFeature = [];
+        var selectorder = '';
+        if (selectPrice == '') {
+            selectPrice = '00';
+        }
+        if (selectSquare == '') {
+            selectSquare = '00';
+        }
+        if (selectBedroom == '') {
+            selectBedroom = [0];
+        }
+        if (selectBathroom == '') {
+            selectBathroom = [0];
+        }
+        var cityList = [{
+            name: '全區',
+            value: 'A',
+            tagname: '台北市全區'
+        }, {
+            name: '全區',
+            value: 'B',
+            tagname: '新北市全區'
+        }, {
+            name: '基隆市全區',
+            value: 'C',
+            tagname: '基隆市全區'
+        }, ];
+
+        var citys = {
+            taipei: [{
+                name: '中正區',
+                value: 'A01'
+            }, {
+                name: '大安區',
+                value: 'A05'
+            }, {
+                name: '中山區',
+                value: 'A03'
+            }, {
+                name: '信義區',
+                value: 'A07'
+            }, {
+                name: '松山區',
+                value: 'A04'
+            }, {
+                name: '大同區',
+                value: 'A02'
+            }, {
+                name: '內湖區',
+                value: 'A10'
+            }, {
+                name: '文山區',
+                value: 'A12'
+            }, {
+                name: '南港區',
+                value: 'A11'
+            }, {
+                name: '士林區',
+                value: 'A08'
+            }, {
+                name: '北投區',
+                value: 'A09'
+            }, {
+                name: '萬華區',
+                value: 'A06'
+            }],
+            newtaipei: [{
+                    name: '板橋區',
+                    value: 'B03'
+                }, {
+                    name: '新店區',
+                    value: 'B11'
+                }, {
+                    name: '三重區',
+                    value: 'B20'
+                }, {
+                    name: '永和區',
+                    value: 'B14'
+                }, {
+                    name: '新莊區',
+                    value: 'B21'
+                }, {
+                    name: '中和區',
+                    value: 'B15'
+                }, {
+                    name: '土城區',
+                    value: 'B16'
+                }, {
+                    name: '林口區',
+                    value: 'B23'
+                }, {
+                    name: '淡水區',
+                    value: 'B27'
+                }, {
+                    name: '其他區域',
+                    value: 'B01,B02,B04,B05,B06,B07,B08,B09,B10,B12,B13,B16,B17,B18,B19,B22,B24,B25,B26,B28,B29'
+                },
+
+            ],
+            keelung: [{
+                name: '其他區域',
+                value: 'C01,C02,C03,C04,C05,C06,C07'
+            }]
+        };
+        types = [{
+            name: '電梯大樓',
+            value: '電梯大樓'
+        }, {
+            name: '公寓',
+            value: '公寓'
+        }, {
+            name: '透天、別墅',
+            value: '透天,別墅'
+        }, {
+            name: '辦公室',
+            value: '辦公室'
+        }, {
+            name: '廠辦、土地',
+            value: '廠辦,土地'
+        }, ]
+        prices = [{
+            name: '價格不限',
+            value: '00'
+        }, {
+            name: '0 - 800 萬',
+            value: '0-800'
+        }, {
+            name: '800 - 1200 萬',
+            value: '800-1200'
+        }, ]
+
+        squares = [{
+            name: '坪數不限',
+            value: '00'
+        }, {
+            name: '0 - 14坪',
+            value: '0-14'
+        }, {
+            name: '15 - 29坪',
+            value: '15-29'
+        }, {
+            name: '30坪以上',
+            value: '30-UP'
+        }, {
+            name: '40坪以上',
+            value: '40-UP'
+        }, {
+            name: '50坪以上',
+            value: '50-UP'
+        }, ]
+
+        rooms = [{
+            name: "臥室'(房)",
+            min: '0',
+            max: '10',
+            number: 'bedroom'
+        }, {
+            name: "浴室",
+            min: '0',
+            max: '10',
+            number: 'bathroom'
+        }, ]
+        specify = [{
+            name: '車位',
+            value: 'hasParking'
+        }, {
+            name: '電梯',
+            value: 'haselevator'
+        }]
+        feature = [{
+            name: '捷運',
+            value: '1'
+        }, {
+            name: '學校',
+            value: '3'
+        }, {
+            name: '公車',
+            value: '2'
+        }, {
+            name: '公園',
+            value: '5'
+        }, {
+            name: '超市',
+            value: '9'
+        }, {
+            name: '醫療',
+            value: '4'
+        }, {
+            name: '便利商店',
+            value: '7'
+        }, {
+            name: '火車站',
+            value: '10'
+        }]
+
+        var pageContext_request_contextPath = '';
+        var imageUrl = 'http://s3.hicloud.net.tw/snail/images/small/';
+        var CONSTANT_WEBRESOURCE_INDEX_URL = 'http://develop.snailhouse.com.tw:8082/OfficeSnailHouses';
+    </script>
 </head>
+
 <body>
-  <div id="app"></div>
-  <script src="./bundle.js"></script>
+    <!-- <label class="sol-label">
+    <input type="checkbox" class="sol-checkbox" name="都市" item="台北市" value="A">
+    <div class="label-text">台北市</div>
+</label> -->
+
+    <div id="root"></div>
+    <div id="root2"></div>
+    <script src="./bundle.js"></script>
 </body>
+
 </html>
